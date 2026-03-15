@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📋 Gerenciador de Tarefas</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <!-- ====== SIDEBAR ====== -->
+  <aside class="barra-lateral">
+    <div class="logo-area">
+      <div class="logo-icone"><i class="fas fa-check-circle"></i></div>
+      <span class="logo-texto">TaskFlow</span>
+    </div>
+
+    <nav class="navegacao">
+      <a href="#" class="item-nav ativo" data-filtro="todas">
+        <i class="fas fa-th-large"></i>
+        <span>Todas as Tarefas</span>
+        <span class="contador-nav" id="contadorTodas">0</span>
+      </a>
+      <a href="#" class="item-nav" data-filtro="pendente">
+        <i class="fas fa-clock"></i>
+        <span>Pendentes</span>
+        <span class="contador-nav" id="contadorPendentes">0</span>
+      </a>
+      <a href="#" class="item-nav" data-filtro="em_progresso">
+        <i class="fas fa-spinner"></i>
+        <span>Em Progresso</span>
+        <span class="contador-nav" id="contadorProgresso">0</span>
+      </a>
+      <a href="#" class="item-nav" data-filtro="concluida">
+        <i class="fas fa-check-double"></i>
+        <span>Concluídas</span>
+        <span class="contador-nav" id="contadorConcluidas">0</span>
+      </a>
+    </nav>
+
+    <div class="secao-prioridade">
+      <p class="titulo-secao">Por Prioridade</p>
+      <a href="#" class="item-nav" data-prioridade="alta">
+        <span class="ponto-prioridade alta"></span><span>Alta Prioridade</span>
+      </a>
+      <a href="#" class="item-nav" data-prioridade="media">
+        <span class="ponto-prioridade media"></span><span>Média Prioridade</span>
+      </a>
+      <a href="#" class="item-nav" data-prioridade="baixa">
+        <span class="ponto-prioridade baixa"></span><span>Baixa Prioridade</span>
+      </a>
+    </div>
+
+    <button class="btn-nova-tarefa" id="btnAbrirModal">
+      <i class="fas fa-plus"></i><span>Nova Tarefa</span>
+    </button>
+  </aside>
+
+  <!-- ====== CONTEÚDO PRINCIPAL ====== -->
+  <main class="conteudo-principal">
+    <header class="cabecalho">
+      <div class="titulo-pagina">
+        <h1 id="tituloPagina">Todas as Tarefas</h1>
+        <p id="subtituloPagina">Gerencie suas tarefas do dia a dia</p>
+      </div>
+      <div class="acoes-cabecalho">
+        <div class="campo-busca">
+          <i class="fas fa-search"></i>
+          <input type="text" id="campoBusca" placeholder="Buscar tarefas..." />
+        </div>
+      </div>
+    </header>
+
+    <section class="cards-estatisticas">
+      <div class="card-stat">
+        <div class="card-stat-icone total"><i class="fas fa-list-check"></i></div>
+        <div class="card-stat-info"><span class="card-stat-numero" id="statTotal">0</span><span class="card-stat-label">Total</span></div>
+      </div>
+      <div class="card-stat">
+        <div class="card-stat-icone pendente"><i class="fas fa-clock"></i></div>
+        <div class="card-stat-info"><span class="card-stat-numero" id="statPendentes">0</span><span class="card-stat-label">Pendentes</span></div>
+      </div>
+      <div class="card-stat">
+        <div class="card-stat-icone progresso"><i class="fas fa-fire"></i></div>
+        <div class="card-stat-info"><span class="card-stat-numero" id="statProgresso">0</span><span class="card-stat-label">Em Progresso</span></div>
+      </div>
+      <div class="card-stat">
+        <div class="card-stat-icone concluida"><i class="fas fa-trophy"></i></div>
+        <div class="card-stat-info"><span class="card-stat-numero" id="statConcluidas">0</span><span class="card-stat-label">Concluídas</span></div>
+      </div>
+    </section>
+
+    <div class="progresso-global">
+      <div class="progresso-header"><span>Progresso Geral</span><span id="percentualProgresso">0%</span></div>
+      <div class="barra-progresso-container"><div class="barra-progresso-fill" id="barraProgressoFill"></div></div>
+    </div>
+    
+    <!-- Área para injetar dashboard via feature -->
+    <section class="painel-dashboard" id="painelDashboard" style="display:none;">
+      <div class="grid-graficos" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+        <div class="card-grafico" style="background:white; border-radius:16px; padding:24px; border:1px solid #e2e8f0;"><canvas id="graficoStatus"></canvas></div>
+        <div class="card-grafico" style="background:white; border-radius:16px; padding:24px; border:1px solid #e2e8f0;"><canvas id="graficoPrioridade"></canvas></div>
+      </div>
+    </section>
+
+    <section class="area-tarefas">
+      <div id="listaTarefas" class="lista-tarefas"></div>
+      <div class="estado-vazio" id="estadoVazio" style="display:none;">
+        <div class="estado-vazio-icone"><i class="fas fa-clipboard-list"></i></div>
+        <h3>Nenhuma tarefa encontrada</h3>
+        <p>Crie sua primeira tarefa clicando em "Nova Tarefa"</p>
+        <button class="btn-primario" id="btnVazioNovaTarefa"><i class="fas fa-plus"></i> Criar Tarefa</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====== MODAL CRIAR / EDITAR ====== -->
+  <div class="overlay-modal" id="overlayModal">
+    <div class="modal" id="modalTarefa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloModal">Nova Tarefa</h2>
+        <button class="btn-fechar-modal" id="btnFecharModal"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="formularioTarefa" class="modal-corpo">
+        <input type="hidden" id="campoIdTarefa" />
+        <div class="grupo-campo">
+          <label for="campoTitulo">Título <span class="obrigatorio">*</span></label>
+          <input type="text" id="campoTitulo" placeholder="Digite o título da tarefa..." maxlength="100" required />
+          <span class="contador-chars" id="contadorTitulo">0/100</span>
+        </div>
+        <div class="grupo-campo">
+          <label for="campoDescricao">Descrição</label>
+          <textarea id="campoDescricao" placeholder="Adicione uma descrição detalhada..." rows="3" maxlength="500"></textarea>
+          <span class="contador-chars" id="contadorDescricao">0/500</span>
+        </div>
+        <div class="linha-campos">
+          <div class="grupo-campo">
+            <label for="campoStatus">Status</label>
+            <select id="campoStatus">
+              <option value="pendente">🕐 Pendente</option>
+              <option value="em_progresso">🔥 Em Progresso</option>
+              <option value="concluida">✅ Concluída</option>
+            </select>
+          </div>
+          <div class="grupo-campo">
+            <label for="campoPrioridade">Prioridade</label>
+            <select id="campoPrioridade">
+              <option value="baixa">🟢 Baixa</option>
+              <option value="media" selected>🟡 Média</option>
+              <option value="alta">🔴 Alta</option>
+            </select>
+          </div>
+        </div>
+        <div class="linha-campos">
+          <div class="grupo-campo">
+            <label for="campoCategoria">Categoria</label>
+            <input type="text" id="campoCategoria" placeholder="Ex: Trabalho, Pessoal..." />
+          </div>
+          <div class="grupo-campo">
+            <label for="campoDataVencimento">Data de Vencimento</label>
+            <input type="date" id="campoDataVencimento" />
+          </div>
+        </div>
+        <div class="modal-rodape">
+          <button type="button" class="btn-secundario" id="btnCancelarModal">Cancelar</button>
+          <button type="submit" class="btn-primario" id="btnSalvarTarefa"><i class="fas fa-save"></i> Salvar Tarefa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====== MODAL CONFIRMAÇÃO ====== -->
+  <div class="overlay-modal" id="overlayConfirmacao">
+    <div class="modal modal-pequeno" id="modalConfirmacao">
+      <div class="confirmacao-icone"><i class="fas fa-exclamation-triangle"></i></div>
+      <h3>Confirmar Exclusão</h3>
+      <p>Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.</p>
+      <div class="confirmacao-acoes">
+        <button class="btn-secundario" id="btnCancelarExclusao">Cancelar</button>
+        <button class="btn-perigo" id="btnConfirmarExclusao"><i class="fas fa-trash"></i> Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-toast" id="containerToast"></div>
+
+  <!-- Injeção de Features -->
+  <div class="logo-area" style="position:fixed; bottom:10px; left:10px; z-index:200;">
+     <button class="btn-modo-escuro" id="btnModoEscuro" style="background:#1e1b4b; color:white; border:none; padding:10px; border-radius:50%; cursor:pointer;"><i class="fas fa-moon"></i></button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/features/dragdrop.js"></script>
+  <script src="/js/features/dashboard.js"></script>
+  <script src="/js/features/modoEscuro.js"></script>
+</body>
+</html>
