@@ -281,22 +281,22 @@ function criarColunaKanban(definicaoColuna, tarefasColuna){
 
     }
 
-    coluna.addEventListener("dragover", (evento) => {
+    const tratarArrasteSobreColuna = (evento) => {
 
         evento.preventDefault()
         coluna.classList.add("coluna-arraste-ativa")
 
-    })
+    }
 
-    coluna.addEventListener("dragleave", (evento) => {
+    const tratarSaidaArrasteDaColuna = (evento) => {
 
         if (!coluna.contains(evento.relatedTarget)){
             coluna.classList.remove("coluna-arraste-ativa")
         }
 
-    })
+    }
 
-    coluna.addEventListener("drop", async (evento) => {
+    const tratarDropNaColuna = async (evento) => {
 
         evento.preventDefault()
         coluna.classList.remove("coluna-arraste-ativa")
@@ -308,7 +308,16 @@ function criarColunaKanban(definicaoColuna, tarefasColuna){
 
         await moverTarefaKanban(idTarefa, novoStatus)
 
-    })
+    }
+
+    // O drop pode acontecer no container ou na lista interna, dependendo do elemento alvo.
+    coluna.addEventListener("dragover", tratarArrasteSobreColuna)
+    coluna.addEventListener("dragleave", tratarSaidaArrasteDaColuna)
+    coluna.addEventListener("drop", tratarDropNaColuna)
+
+    listaColuna.addEventListener("dragover", tratarArrasteSobreColuna)
+    listaColuna.addEventListener("dragleave", tratarSaidaArrasteDaColuna)
+    listaColuna.addEventListener("drop", tratarDropNaColuna)
 
     return coluna
 
@@ -391,6 +400,7 @@ async function moverTarefaKanban(idTarefa, novoStatus){
     const statusAnterior = tarefaAtual.status
 
     tarefaAtual.status = novoStatus
+    atualizarEstatisticas(tarefasCache)
     aplicarFiltros()
 
     try {
@@ -414,6 +424,7 @@ async function moverTarefaKanban(idTarefa, novoStatus){
     } catch (erro) {
 
         tarefaAtual.status = statusAnterior
+        atualizarEstatisticas(tarefasCache)
         aplicarFiltros()
 
     }
@@ -458,6 +469,8 @@ function atualizarEstatisticas(tarefas){
 function aplicarFiltros(){
 
     let filtradas = tarefasCache || []
+
+    atualizarEstatisticas(tarefasCache)
 
     if (filtroStatusAtual && filtroStatusAtual !== "todas"){
 
