@@ -70,38 +70,18 @@
           <i class="fas fa-search"></i>
           <input type="text" id="campoBusca" placeholder="Buscar tarefas..." />
         </div>
+        <button class="btn-alternar-tema" id="btnAlternarTema" type="button" aria-label="Ativar modo escuro" aria-pressed="false" title="Alternar tema">
+          <i class="fas fa-moon" id="iconeTema"></i>
+          <span id="textoTema">Modo escuro</span>
+        </button>
       </div>
     </header>
 
-    <section class="cards-estatisticas">
-      <div class="card-stat">
-        <div class="card-stat-icone total"><i class="fas fa-list-check"></i></div>
-        <div class="card-stat-info"><span class="card-stat-numero" id="statTotal">0</span><span class="card-stat-label">Total</span></div>
-      </div>
-      <div class="card-stat">
-        <div class="card-stat-icone pendente"><i class="fas fa-clock"></i></div>
-        <div class="card-stat-info"><span class="card-stat-numero" id="statPendentes">0</span><span class="card-stat-label">Pendentes</span></div>
-      </div>
-      <div class="card-stat">
-        <div class="card-stat-icone progresso"><i class="fas fa-fire"></i></div>
-        <div class="card-stat-info"><span class="card-stat-numero" id="statProgresso">0</span><span class="card-stat-label">Em Progresso</span></div>
-      </div>
-      <div class="card-stat">
-        <div class="card-stat-icone concluida"><i class="fas fa-trophy"></i></div>
-        <div class="card-stat-info"><span class="card-stat-numero" id="statConcluidas">0</span><span class="card-stat-label">Concluídas</span></div>
-      </div>
-    </section>
-
-    <div class="progresso-global">
-      <div class="progresso-header"><span>Progresso Geral</span><span id="percentualProgresso">0%</span></div>
-      <div class="barra-progresso-container"><div class="barra-progresso-fill" id="barraProgressoFill"></div></div>
-    </div>
-    
     <!-- Área para injetar dashboard via feature -->
     <section class="painel-dashboard" id="painelDashboard" style="display:none;">
-      <div class="grid-graficos" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
-        <div class="card-grafico" style="background:white; border-radius:16px; padding:24px; border:1px solid #e2e8f0;"><canvas id="graficoStatus"></canvas></div>
-        <div class="card-grafico" style="background:white; border-radius:16px; padding:24px; border:1px solid #e2e8f0;"><canvas id="graficoPrioridade"></canvas></div>
+      <div class="grid-graficos">
+        <div class="card-grafico"><canvas id="graficoStatus"></canvas></div>
+        <div class="card-grafico"><canvas id="graficoPrioridade"></canvas></div>
       </div>
     </section>
 
@@ -186,15 +166,7 @@
 
   <div class="container-toast" id="containerToast"></div>
 
-  <!-- Injeção de Features -->
-  <div class="logo-area" style="position:fixed; bottom:10px; left:10px; z-index:200;">
-     <button class="btn-modo-escuro" id="btnModoEscuro" style="background:#1e1b4b; color:white; border:none; padding:10px; border-radius:50%; cursor:pointer;"><i class="fas fa-moon"></i></button>
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/js/app.js"></script>
-  <script src="/js/features/dragdrop.js"></script>
-  <script src="/js/features/dashboard.js"></script>
-  <script src="/js/features/modoEscuro.js"></script>
 </body>
 </html>
