@@ -36,6 +36,7 @@ let tarefasCache = []
 
 // Filtros atuais
 let filtroStatusAtual = "todas"
+let filtroPrioridadeAtual = null
 let termoBuscaAtual = ""
 let houveArraste = false
 
@@ -464,6 +465,12 @@ function aplicarFiltros(){
 
     }
 
+    if (filtroPrioridadeAtual){
+
+        filtradas = filtradas.filter(tarefa => tarefa.prioridade === filtroPrioridadeAtual)
+
+    }
+
     if (termoBuscaAtual){
 
         const termo = termoBuscaAtual
@@ -554,9 +561,30 @@ linksStatus.forEach(link => {
 
 })
 
+// Filtros por prioridade na sidebar
+const linksPrioridade = document.querySelectorAll(".secao-prioridade .item-nav[data-prioridade]")
+
+linksPrioridade.forEach(link => {
+
+    link.addEventListener("click", (e) => {
+
+        e.preventDefault()
+
+        const prioridade = link.getAttribute("data-prioridade") || null
+
+        atualizarFiltroPrioridade(prioridade)
+
+    })
+
+})
+
 function atualizarFiltroStatus(novoStatus){
 
     filtroStatusAtual = novoStatus
+    filtroPrioridadeAtual = null
+
+    // Remover destaque dos filtros de prioridade
+    linksPrioridade.forEach(link => link.classList.remove("ativo"))
 
     // Atualizar destaque no menu lateral
     linksStatus.forEach(link => {
@@ -577,6 +605,41 @@ function atualizarFiltroStatus(novoStatus){
         if (novoStatus === "pendente") tituloPagina.textContent = "Tarefas Pendentes"
         else if (novoStatus === "em_progresso") tituloPagina.textContent = "Tarefas em Progresso"
         else if (novoStatus === "concluida") tituloPagina.textContent = "Tarefas Concluídas"
+        else tituloPagina.textContent = "Todas as Tarefas"
+
+    }
+
+    aplicarFiltros()
+
+}
+
+function atualizarFiltroPrioridade(prioridade){
+
+    filtroPrioridadeAtual = prioridade
+    filtroStatusAtual = "todas"
+
+    // Remover destaque dos filtros de status
+    linksStatus.forEach(link => link.classList.remove("ativo"))
+
+    // Atualizar destaque no menu lateral de prioridade
+    linksPrioridade.forEach(link => {
+
+        const valor = link.getAttribute("data-prioridade")
+
+        if (valor === prioridade){
+            link.classList.add("ativo")
+        } else {
+            link.classList.remove("ativo")
+        }
+
+    })
+
+    // Atualizar título da página
+    if (tituloPagina){
+
+        if (prioridade === "alta") tituloPagina.textContent = "Tarefas com Alta Prioridade"
+        else if (prioridade === "media") tituloPagina.textContent = "Tarefas com Média Prioridade"
+        else if (prioridade === "baixa") tituloPagina.textContent = "Tarefas com Baixa Prioridade"
         else tituloPagina.textContent = "Todas as Tarefas"
 
     }
