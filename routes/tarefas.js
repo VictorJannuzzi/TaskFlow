@@ -68,9 +68,16 @@ router.put("/:id", async (req, res) => {
 
             req.params.id,
             req.body,
-            { new: true }
+            {
+                new: true,
+                runValidators: true
+            }
 
         )
+
+        if (!tarefaAtualizada){
+            return res.status(404).json({ erro: "Tarefa nao encontrada" })
+        }
 
         res.json(tarefaAtualizada)
 
